@@ -28,6 +28,8 @@ fi
 ROOT=$(dirname "$0")/../../
 BIN=${ROOT}/bin
 
+SOFTHSM_SETUP=$(dirname "$0")/softhsm_setup
+
 ALPINE=docker.io/library/alpine:latest
 ALPINE_ENC=docker.io/library/alpine:enc
 ALPINE_DEC=docker.io/library/alpine:dec
@@ -39,8 +41,8 @@ NGINX_ENC=docker.io/library/nginx:enc
 NGINX_DEC=docker.io/library/nginx:dec
 
 # gpg2 --export-secret-key ...
-GPGTESTKEY1="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"
-GPGTESTKEY2="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"
+GPGTESTKEY1="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"
+GPGTESTKEY2="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"
 
 JWKTESTKEY1='{"d":"pGBXnqbPbMR6PIPkyzz1OhmJq4ORmlHwh2GunXJuzSj1AhYL9rZ8fd_NNn128yPmllTN6LOBqNj1vqXOnMaeu63vdn08z8xTDlCsuUt2T0NzgQlPuducu8K0OURFqf-C3dIPqipxnWKydN7_gYEEYosxgKU3B8WolA65YFTaUxv-NQL-3rASUTtiQ1rtm2l-RBEIqOuFh350Bahnq_gtINxKpVahpLDiLTte6HpnbzU7ei_dW4v3j6foMg2pOWUAcfxNfmZwQO-eEge88E5WfN7HIQnBTTjAjrNwIP-SfaDmKpa37at1kTG932If0VopQ9CJZE_jM2wHx3VfZiTmAQ","dp":"RFUZdzAaCs3ak4lxptnHy5J_ujWgHk1CvzyIU1tEw1P9BCme-pW30YdEvXkXMzqiX8g0p6WdEvbfx0I9dctje9IbjCQcemxjIUx-2ifUppp8_I4BCaZ4K4puyt65TJL2za6PmyuVTDlugYceMIupmZ4bx6C70bjTeo1ErVe-yYE","dq":"zOCBbLcqCtkXUQqlmOEmb35GBc5HLV6LcQSYAm1mhMIRjK-cSiXAlg4yKhXoGNAuU-LBXyVLeOa4cNdG_v-34XZGmqIyBWG1ehmMumcblzI2-Cuj76jW26sWBvPBH7cyEf1FULS3acF-xPd8TkNA9P0laZmCshOfa_-zkMM5Tf8","e":"AQAB","kty":"RSA","n":"zMwIcZn24y3Aj-P5Vox-w54FkpoRGeYGhyF7rdDQN2bYO-8h09doVbbgstYauyZKRvk3iWoOwfY9foD0hHCJNtT20sqbx40osGN9qLERweO6Xn8adhVPN7isTT9KozdvsrOIBr7uQUsruvow4klIYrv5FqS_RHpy4f0CUlsjPqc3F5PC4yV0D0f_QUApr06--uHRdH3ucunvdwR1V1IZV0DEJwZ5DzEDQmynzo5oV1UVNb9DSzTXsUAzSipCrdIyUxCnofPp_PzKvqMbctBAchx0AKN8IK8Z3RGFYyrV3HxkXqFxZ4aTVnkXqlnGV5CRQhx59ckIWUxAlyLcGLXvmw","p":"_aCnqjENQBE-he_7XWBo7kXJHnOz6SucuLNPo35imTO4nJBkga9HOF8VxeM3OrskEFVudkDvSqbq4KtERiCGL8f3-LAUKSFaxULa0h9FPJOlks_JXVlDwGsXOyHirIHIEvvbjAAQlV_F7tQNCzSHuXmegh3yJWLwz6EcUw2z9YE","q":"zrZyXsm2jVHc9JkWEp8CMJ0J65f87KrYjQgcb46XkCK1E7bnFDLiNzYV-CQ8a9kKuWfd_LUx2FIjwrik5IFQXJA7Z7s4jvAh2J-pLutSD4sU0KAXcH8W85jLd9C0varGXWFFD7axv-FjDEEQ8TL35Nh5svILn_hgMfB2TPNuixs","qi":"GgGk6GPOtfo2TFtuPQPVTTPGmEzoVekZNH9VQfvQchiRyU1cddYWGRzzJct1zP0GhRsam7m27zguxxVVOORjM5NAPHhjhuwmncmi5hZDyfyIURPXOgslPNG42XdIZdfJtgxqUuOhLNfeQcQXJM8S2EpauLmlm14blP5V-7ZOXO0"}'
 
@@ -157,11 +159,14 @@ failExit() {
 }
 
 pullImages() {
+	if [ -z "$IMAGE_PULL_CREDS" ]; then
+		echo "Note: Image pull credentials can be passed with env. variable IMAGE_PULL_CREDS=<username>:<password>"
+	fi
 	$CTR images rm --sync ${ALPINE_ENC} ${ALPINE_DEC} ${NGINX_ENC} ${NGINX_DEC} &>/dev/null
-	$CTR images pull --all-platforms ${ALPINE} &>/dev/null
+	$CTR images pull ${IMAGE_PULL_CREDS:+--user ${IMAGE_PULL_CREDS}} --all-platforms ${ALPINE} &>/dev/null
 	failExit $? "Image pull failed on ${ALPINE}"
 
-	$CTR images pull --platform linux/amd64 ${NGINX} &>/dev/null
+	$CTR images pull ${IMAGE_PULL_CREDS:+--user ${IMAGE_PULL_CREDS}} --platform linux/amd64 ${NGINX} &>/dev/null
 	failExit $? "Image pull failed on ${NGINX}"
 
 	LAYER_INFO_ALPINE="$($CTR images layerinfo ${ALPINE})"
@@ -371,7 +376,7 @@ testPGP() {
 	failExit $? "Image layerinfo on PGP encrypted image shows differences in architectures"
 
 	diff <(echo "${LAYER_INFO_ALPINE_ENC}" | gawk '{print $6 $7}' | sort | uniq | tr -d '\n') \
-		<(echo -n "0x6d6d5017a3752cbd,0xb0310f009d3abc2fRECIPIENTS")
+		<(echo -n "0xbebc2c4b1c4ef646,0xbfb902bf9ff6f235RECIPIENTS")
 	failExit $? "Image layerinfo on PGP encrypted image shows unexpected recipients"
 
 	LAYER_INFO_ALPINE_ENC="$($CTR images layerinfo --gpg-homedir ${GPGHOMEDIR} --gpg-version 2 ${ALPINE_ENC})"
@@ -610,18 +615,20 @@ testJWE() {
 
 testLocalKeys() {
 	createJWEKeys
+	setupPKCS11
 
-	echo "Testing JWE type of encryption with local unpack keys"
+	echo "Testing JWE and PKCS11 type of encryption with local unpack keys"
 
 	# Remove original images
 	$CTR images rm --sync ${ALPINE_ENC} ${ALPINE_DEC} ${NGINX_ENC} ${NGINX_DEC} &>/dev/null
 
-	local recipient
-	recipient=jwe:${PUBKEYPEM}
+	local recipient1=jwe:${PUBKEYPEM}
+	local recipient2=pkcs11:${SOFTHSM_KEY}
 	$CTR images encrypt \
-		--recipient ${recipient} \
+		--recipient ${recipient1} \
+		--recipient ${recipient2} \
 		${ALPINE} ${ALPINE_ENC}
-	failExit $? "Image encryption with JWE failed; public key: ${recipient}"
+	failExit $? "Image encryption with JWE and PKCS11 failed"
 
 	LAYER_INFO_ALPINE_ENC="$($CTR images layerinfo ${ALPINE_ENC})"
 	failExit $? "Image layerinfo on JWE encrypted image failed; public key: ${recipient}"
@@ -631,7 +638,7 @@ testLocalKeys() {
 	failExit $? "Image layerinfo on JWE encrypted image shows differences in architectures"
 
 	diff <(echo "${LAYER_INFO_ALPINE_ENC}" | gawk '{print $5}' | sort | uniq | tr -d '\n') \
-		<(echo -n "ENCRYPTIONjwe")
+		<(echo -n "ENCRYPTIONjwe,pkcs11")
 	failExit $? "Image layerinfo on JWE encrypted image shows unexpected encryption"
 
 	# Remove snapshots to force the decryption with unpacker
@@ -653,19 +660,35 @@ testLocalKeys() {
 		cp $privkey ${LOCAL_KEYS_PATH}/.
 	done
 
-	echo "Testing creation of container from encrypted image with local keys"
+	echo "Testing creation of container from encrypted image with local keys (JWE)"
 	MSG=$($CTR container rm testcontainer1 2>&1)
 	MSG=$($CTR snapshot rm testcontainer1 2>&1)
 	MSG=$(sudo $CTR container create ${ALPINE_ENC} --skip-decrypt-auth --key ${PRIVKEY2PEM} testcontainer1 2>&1)
 
-	failExit $? "Should have been able to create a container from encrypted image when local keys exists\n${MSG}"
+	failExit $? "Should have been able to create a container from encrypted image when local keys exists (JWE)\n${MSG}"
+	MSG=$($CTR container rm testcontainer1 2>&1)
+	MSG=$($CTR snapshot rm testcontainer1 2>&1)
+
+	rm -f ${LOCAL_KEYS_PATH}/*
+
+	# now test with the pkcs11 key
+	for privkey in ${SOFTHSM_KEY}; do
+		cp $privkey ${LOCAL_KEYS_PATH}/.
+	done
+
+	echo "Testing creation of container from encrypted image with local keys (PKCS11)"
+	MSG=$($CTR container rm testcontainer1 2>&1)
+	MSG=$($CTR snapshot rm testcontainer1 2>&1)
+	MSG=$(sudo $CTR container create ${ALPINE_ENC} --skip-decrypt-auth --key ${PRIVKEY2PEM} testcontainer1 2>&1)
+
+	failExit $? "Should have been able to create a container from encrypted image when local keys exists (PKCS11)\n${MSG}"
 	MSG=$($CTR container rm testcontainer1 2>&1)
 	MSG=$($CTR snapshot rm testcontainer1 2>&1)
 
 	$CTR images rm --sync ${ALPINE_ENC} &>/dev/null
-	echo "Encryption with ${recipient} and decrypting with local unpack keys worked"
+	echo "Encryption with ${recipient1} and ${recipient2} and decrypting with local unpack keys worked"
 
-	echo "PASS: JWE Type of encryption with local unpack keys"
+	echo "PASS: JWE and PKCS11 type of encryption with local unpack keys"
 	echo
 }
 
@@ -798,12 +821,95 @@ testPKCS7() {
 	$CTR images rm --sync ${ALPINE_DEC} ${ALPINE_ENC} &>/dev/null
 }
 
-testPGPandJWEandPKCS7() {
+setupPKCS11() {
+	echo "Generating softhsm key for PKCS11 encryption"
+
+	local output
+
+	# Env. variable for softhsm_setup
+	export SOFTHSM_SETUP_CONFIGDIR=${WORKDIR}
+	# Env. variable for ctr-enc
+	export OCICRYPT_CONFIG=internal
+	SOFTHSM_KEY=${WORKDIR}/softhsm_key.yaml
+
+	output=$(${SOFTHSM_SETUP} setup 2>&1)
+	failExit $? "'softhsm_setup setup' failed: ${output}"
+	keyuri=$(echo "${output}" | cut -d " " -f2)
+	cat <<_EOF_ >${SOFTHSM_KEY}
+pkcs11:
+  uri: ${keyuri}
+module:
+  env:
+    SOFTHSM2_CONF: ${SOFTHSM_SETUP_CONFIGDIR}/softhsm2.conf
+_EOF_
+
+	# Note: Need to set OCICRYPT_OAEP_HASHALG=sha1 to be able to decrypt after using the PEM key!
+	SOFTHSM_KEY_PEM=${WORKDIR}/softhsm_key.pem
+	${SOFTHSM_SETUP} getpubkey > ${SOFTHSM_KEY_PEM}
+	failExit $? "'softhsm_setup getpubkey' failed"
+}
+
+testPKCS11() {
+	setupPKCS11
+
+	echo "Testing PKCS11 type of encryption"
+
+	# Env. variable needed for encryption with SOFTHSM_KEY_PEM
+	export OCICRYPT_OAEP_HASHALG=sha1
+
+	for recipient in pkcs11:${SOFTHSM_KEY} pkcs11:${SOFTHSM_KEY_PEM}; do
+		$CTR images encrypt \
+			--recipient ${recipient} \
+			${ALPINE} ${ALPINE_ENC}
+		failExit $? "Image encryption with PKCS11 failed; public key: ${recipient}"
+
+		LAYER_INFO_ALPINE_ENC="$($CTR images layerinfo ${ALPINE_ENC})"
+		failExit $? "Image layerinfo on PKCS11 encrypted image failed; public key: ${recipient}"
+
+		diff <(echo "${LAYER_INFO_ALPINE}" | gawk '{print $3}') \
+			<(echo "${LAYER_INFO_ALPINE_ENC}" | gawk '{print $3}')
+		failExit $? "Image layerinfo on PKCS11 encrypted image shows differences in architectures"
+
+		diff <(echo "${LAYER_INFO_ALPINE_ENC}" | gawk '{print $5}' | sort | uniq | tr -d '\n') \
+			<(echo -n "ENCRYPTIONpkcs11")
+		failExit $? "Image layerinfo on PKCS11 encrypted image shows unexpected encryption"
+
+		for privkey in ${SOFTHSM_KEY}; do
+			$CTR images decrypt \
+				--key ${privkey} \
+				${ALPINE_ENC} ${ALPINE_DEC}
+			failExit $? "Image decryption with PKCS11 failed: private key: ${privkey}"
+
+			LAYER_INFO_ALPINE_DEC="$($CTR images layerinfo ${ALPINE_DEC})"
+			failExit $? "Image layerinfo on decrypted image failed (PKCS11)"
+
+			diff <(echo "${LAYER_INFO_ALPINE}") <(echo "${LAYER_INFO_ALPINE_DEC}")
+			failExit $? "Image layerinfos are different (PKCS11)"
+
+			$CTR images rm --sync ${ALPINE_DEC} &>/dev/null
+			echo "Decryption with ${privkey} worked."
+		done
+		$CTR images rm --sync ${ALPINE_ENC} &>/dev/null
+		echo "Encryption with ${recipient} worked"
+	done
+
+	$CTR images rm --sync ${ALPINE_DEC} &>/dev/null
+
+	echo "PASS: PKCS11 Type of encryption"
+	echo
+}
+
+testPGPandJWEandPKCS7andPKCS11andKeyprovider() {
 	local ctr
 
 	createJWEKeys
 	setupPGP
 	setupPKCS7
+	setupPKCS11
+	setupKeyprovider
+
+	# Env. variable needed for encryption with SOFTHSM_KEY_PEM
+	export OCICRYPT_OAEP_HASHALG=sha1
 
 	echo "Testing large recipient list"
 	$CTR images encrypt \
@@ -815,6 +921,8 @@ testPGPandJWEandPKCS7() {
 		--recipient jwe:${PUBKEY2PEM} \
 		--recipient pkcs7:${CLIENTCERT} \
 		--recipient pkcs7:${CLIENT2CERT} \
+		--recipient pkcs11:${SOFTHSM_KEY} \
+		--recipient pkcs11:${SOFTHSM_KEY_PEM} \
 		${ALPINE} ${ALPINE_ENC}
 	failExit $? "Image encryption to many different recipients failed"
 	LAYER_INFO_ALPINE_ENC="$($CTR images layerinfo ${ALPINE_ENC})"
@@ -825,12 +933,12 @@ testPGPandJWEandPKCS7() {
 	failExit $? "Image layerinfo on multi-recipient encrypted image shows differences in architectures"
 
 	diff <(echo "${LAYER_INFO_ALPINE_ENC}" | gawk '{print $5}' | sort | uniq | tr -d '\n') \
-		<(echo -n "ENCRYPTIONjwe,pgp,pkcs7")
+		<(echo -n "ENCRYPTIONjwe,pgp,pkcs11,pkcs7")
 
 	$CTR images rm --sync ${ALPINE_ENC} &>/dev/null
 	echo "Encryption to multiple different types of recipients worked."
 
-	echo "Testing adding first PGP and then JWE and PKCS7 recipients"
+	echo "Testing adding first PGP and then JWE and PKCS7 and PKCS11 recipients"
 	$CTR images encrypt \
 		--gpg-homedir ${GPGHOMEDIR} \
 		--gpg-version 2 \
@@ -839,7 +947,12 @@ testPGPandJWEandPKCS7() {
 	failExit $? "Image encryption with PGP failed; recipient: testkey1@key.org"
 
 	ctr=0
-	for recipient in jwe:${PUBKEYPEM} pgp:testkey2@key.org jwe:${PUBKEY2PEM} pkcs7:${CLIENTCERT} pkcs7:${CLIENT2CERT}; do
+	for recipient in jwe:${PUBKEYPEM} \
+			pgp:testkey2@key.org \
+			jwe:${PUBKEY2PEM} \
+			pkcs7:${CLIENTCERT} pkcs7:${CLIENT2CERT} \
+			pkcs11:${SOFTHSM_KEY} pkcs11:${SOFTHSM_KEY_PEM} \
+			${KEYPROVIDER:+provider:testkeyprovider:123}; do
 		$CTR images encrypt \
 			--gpg-homedir ${GPGHOMEDIR} \
 			--gpg-version 2 \
@@ -858,11 +971,17 @@ testPGPandJWEandPKCS7() {
 		if [ $ctr -lt 3 ]; then
 			diff <(echo "${LAYER_INFO_ALPINE_ENC}" | gawk '{print $5}' | sort | uniq | tr -d '\n') \
 				<(echo -n "ENCRYPTIONjwe,pgp")
-		else
+		elif [ $ctr -lt 5 ]; then
 			diff <(echo "${LAYER_INFO_ALPINE_ENC}" | gawk '{print $5}' | sort | uniq | tr -d '\n') \
 				<(echo -n "ENCRYPTIONjwe,pgp,pkcs7")
+		elif [ $ctr -lt 7 ]; then
+			diff <(echo "${LAYER_INFO_ALPINE_ENC}" | gawk '{print $5}' | sort | uniq | tr -d '\n') \
+				<(echo -n "ENCRYPTIONjwe,pgp,pkcs11,pkcs7")
+		else
+			diff <(echo "${LAYER_INFO_ALPINE_ENC}" | gawk '{print $5}' | sort | uniq | tr -d '\n') \
+				<(echo -n "ENCRYPTIONjwe,pgp,pkcs11,pkcs7,provider.testkeyprovider")
 		fi
-		failExit $? "Image layerinfo on JWE encrypted image shows unexpected encryption (ctr=$ctr)"
+		failExit $? "Image layerinfo on multi-recipient-encrypted image shows unexpected encryption (ctr=$ctr)"
 		ctr=$((ctr + 1))
 	done
 
@@ -922,16 +1041,53 @@ testPGPandJWEandPKCS7() {
 		echo "PKCS7 decryption with ${privkey} worked."
 	done
 
+	# and finally pkcs11
+	for privkey in ${SOFTHSM_KEY}; do
+		$CTR images decrypt \
+			--key ${privkey} \
+			${ALPINE_ENC} ${ALPINE_DEC}
+		failExit $? "Image decryption with PKCS11 failed: private key: ${privkey}"
+
+		LAYER_INFO_ALPINE_DEC="$($CTR images layerinfo ${ALPINE_DEC})"
+		failExit $? "Image layerinfo on decrypted image failed (PKCS11)"
+
+		diff <(echo "${LAYER_INFO_ALPINE}") <(echo "${LAYER_INFO_ALPINE_DEC}")
+		failExit $? "Image layerinfos are different (PKCS11)"
+
+		$CTR images rm --sync ${ALPINE_DEC} &>/dev/null
+		echo "PKCS11 Decryption with ${privkey} worked."
+	done
+
+	# and if KEYPROVIDER is set, also try provider:
+	for keyprovider in ${KEYPROVIDER:+provider:testkeyprovider:123}; do
+		$CTR images decrypt \
+			--key ${keyprovider} \
+			${ALPINE_ENC} ${ALPINE_DEC}
+		failExit $? "Image decryption with keyprovider failed: private key: ${keyprovider}"
+
+		LAYER_INFO_ALPINE_DEC="$($CTR images layerinfo ${ALPINE_DEC})"
+		failExit $? "Image layerinfo on decrypted image failed (keyprovider)"
+
+		diff <(echo "${LAYER_INFO_ALPINE}") <(echo "${LAYER_INFO_ALPINE_DEC}")
+		failExit $? "Image layerinfos are different (keyprovider)"
+
+		$CTR images rm --sync ${ALPINE_DEC} &>/dev/null
+		echo "keyprovider Decryption with ${keyprovider} worked."
+	done
+
 	$CTR images rm --sync ${ALPINE_DEC} ${ALPINE_ENC} &>/dev/null
 
-	echo "Testing adding first JWE and then PGP and PKCS7 recipients"
+	echo "Testing adding first JWE and then PGP and PKCS7 and PKCS11 recipients"
 	$CTR images encrypt \
 		--recipient jwe:${PUBKEYPEM} \
 		${ALPINE} ${ALPINE_ENC}
 	failExit $? "Image encryption with JWE failed; public key: ${recipient}"
 
 	ctr=0
-	for recipient in pgp:testkey1@key.org pgp:testkey2@key.org jwe:${PUBKEY2PEM} pkcs7:${CLIENTCERT} pkcs7:${CLIENT2CERT}; do
+	for recipient in pgp:testkey1@key.org pgp:testkey2@key.org \
+			jwe:${PUBKEY2PEM} \
+			pkcs7:${CLIENTCERT} pkcs7:${CLIENT2CERT} \
+			pkcs11:${SOFTHSM_KEY} pkcs11:${SOFTHSM_KEY_PEM}; do
 		$CTR images encrypt \
 			--gpg-homedir ${GPGHOMEDIR} \
 			--gpg-version 2 \
@@ -950,19 +1106,134 @@ testPGPandJWEandPKCS7() {
 		if [ $ctr -lt 3 ]; then
 			diff <(echo "${LAYER_INFO_ALPINE_ENC}" | gawk '{print $5}' | sort | uniq | tr -d '\n') \
 				<(echo -n "ENCRYPTIONjwe,pgp")
-		else
+		elif [ $ctr -lt 5 ]; then
 			diff <(echo "${LAYER_INFO_ALPINE_ENC}" | gawk '{print $5}' | sort | uniq | tr -d '\n') \
 				<(echo -n "ENCRYPTIONjwe,pgp,pkcs7")
+		else
+			diff <(echo "${LAYER_INFO_ALPINE_ENC}" | gawk '{print $5}' | sort | uniq | tr -d '\n') \
+				<(echo -n "ENCRYPTIONjwe,pgp,pkcs11,pkcs7")
 		fi
 		failExit $? "Image layerinfo on JWE encrypted image shows unexpected encryption"
 		ctr=$((ctr + 1))
 	done
 
-	echo "PASS: Test with JWE, PGP, and PKCS7 recipients"
+	echo "PASS: Test with ${KEYPROVIDER:+keyprovider, }JWE, PGP, PKCS7, and PKCS11 recipients"
 	echo
 
 	$CTR images rm --sync ${ALPINE_DEC} ${ALPINE_ENC} &>/dev/null
 }
+
+setupKeyprovider() {
+	if [ -z "${KEYPROVIDER}" ]; then
+		return
+	fi
+	export OCICRYPT_KEYPROVIDER_CONFIG=${WORKDIR}/ocicrypt-keyprovider.conf
+
+	cat <<_EOF_ >${OCICRYPT_KEYPROVIDER_CONFIG}
+{
+  "key-providers": {
+    "testkeyprovider": {
+      "cmd": {
+        "path": "${KEYPROVIDER}",
+        "args": []
+      }
+    }
+  }
+}
+_EOF_
+}
+
+testKeyproviderInvalidPath() {
+    export OCICRYPT_KEYPROVIDER_CONFIG=/path/to/nowhere
+    testJWE
+}
+
+testKeyprovider() {
+	if [ -z "${KEYPROVIDER}" ]; then
+		echo "Skipping keyprovider test; require KEYPROVIDER to point to executable"
+		return 0
+	fi
+
+	createJWEKeys
+	setupPGP
+	setupPKCS7
+	setupPKCS11
+	setupKeyprovider
+
+	echo "Testing keyprovider using '${KEYPROVIDER}'"
+
+	echo "Testing large recpient list"
+
+	$CTR images encrypt \
+		--recipient provider:testkeyprovider:foobar \
+		${ALPINE} ${ALPINE_ENC}
+	failExit $? "Image encryption with keyprovider failed"
+
+	LAYER_INFO_ALPINE_ENC="$($CTR images layerinfo ${ALPINE_ENC})"
+	failExit $? "Image layerinfo on keyprovider-encrypted image failed"
+	diff <(echo "${LAYER_INFO_ALPINE}" | gawk '{print $3}') \
+		<(echo "${LAYER_INFO_ALPINE_ENC}" | gawk '{print $3}')
+	failExit $? "Image layerinfo on keyprovider encrypted image shows differences in architectures"
+
+	diff <(echo "${LAYER_INFO_ALPINE_ENC}" | gawk '{print $5}' | sort | uniq | tr -d '\n') \
+		<(echo -n "ENCRYPTIONprovider.testkeyprovider")
+	failExit $? "Image layerinfo on keyprovider encrypted image shows unexpected encryption"
+
+	MSG=$(sudo $CTR container create ${ALPINE_ENC} --skip-decrypt-auth --key provider:testkeyprovider:xyz testcontainer1 2>&1)
+
+	failExit $? "Should have been able to create a container from encrypted (keyprovider)\n${MSG}"
+
+	$CTR images decrypt \
+		--key provider:testkeyprovider:123 \
+		${ALPINE_ENC} ${ALPINE_DEC}
+	failExit $? "Image decryption with keyprovider failed"
+
+	LAYER_INFO_ALPINE_DEC="$($CTR images layerinfo ${ALPINE_DEC})"
+	failExit $? "Image layerinfo on decrypted image failed (keyprovider)"
+
+	diff <(echo "${LAYER_INFO_ALPINE}") <(echo "${LAYER_INFO_ALPINE_DEC}")
+	failExit $? "Image layerinfos are different (keyprovider)"
+
+	$CTR images rm --sync ${ALPINE_ENC} ${ALPINE_DEC} &>/dev/null
+	echo "Decryption with keyprovider worked."
+
+	echo "PASS: keyprovider type of encryption"
+	echo
+
+	createJWEKeys
+	setupPGP
+	setupPKCS7
+	setupPKCS11
+
+	echo "Testing large recpient list"
+	$CTR images encrypt \
+		--gpg-homedir ${GPGHOMEDIR} \
+		--gpg-version 2 \
+		--recipient pgp:testkey1@key.org \
+		--recipient pgp:testkey2@key.org \
+		--recipient jwe:${PUBKEYPEM} \
+		--recipient jwe:${PUBKEY2PEM} \
+		--recipient pkcs7:${CLIENTCERT} \
+		--recipient pkcs7:${CLIENT2CERT} \
+		--recipient pkcs11:${SOFTHSM_KEY} \
+		--recipient pkcs11:${SOFTHSM_KEY_PEM} \
+		--recipient provider:testkeyprovider:foobar \
+		${ALPINE} ${ALPINE_ENC}
+	failExit $? "Image encryption to many different recipients failed"
+	LAYER_INFO_ALPINE_ENC="$($CTR images layerinfo ${ALPINE_ENC})"
+	failExit $? "Image layerinfo on multi-recipient encrypted image failed; public key: ${recipient}"
+
+	diff <(echo "${LAYER_INFO_ALPINE}" | gawk '{print $3}') \
+		<(echo "${LAYER_INFO_ALPINE_ENC}" | gawk '{print $3}')
+	failExit $? "Image layerinfo on multi-recipient encrypted image shows differences in architectures"
+
+	diff <(echo "${LAYER_INFO_ALPINE_ENC}" | gawk '{print $5}' | sort | uniq | tr -d '\n') \
+		<(echo -n "ENCRYPTIONjwe,pgp,pkcs11,pkcs7,provider.testkeyprovider")
+
+	$CTR images rm --sync ${ALPINE_ENC} &>/dev/null
+	echo "Encryption to multiple different types of recipients worked."
+}
+
 
 # Test containerd with flow where keys are passed in via containerd API
 setup
@@ -971,7 +1242,10 @@ pullImages
 testPGP
 testJWE
 testPKCS7
-testPGPandJWEandPKCS7
+testPKCS11
+testPGPandJWEandPKCS7andPKCS11andKeyprovider
+testKeyprovider
+testKeyproviderInvalidPath
 cleanup
 
 # Test containerd with flow where keys are in local directory

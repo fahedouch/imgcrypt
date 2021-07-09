@@ -27,9 +27,9 @@ import (
 	"github.com/containerd/containerd/images/archive"
 	"github.com/containerd/containerd/log"
 	"github.com/containerd/imgcrypt"
+	"github.com/containerd/imgcrypt/cmd/ctr/commands/flags"
 	"github.com/containerd/imgcrypt/images/encryption"
 	"github.com/urfave/cli"
-	"github.com/containerd/imgcrypt/cmd/ctr/commands/flags"
 )
 
 var importCommand = cli.Command{
